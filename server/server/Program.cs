@@ -11,16 +11,16 @@ namespace server
     class MainServer
     {
         //port number
-        private const int _portNumber = 2000 ;
+        private const int portNumber = 2000 ;
         //określenie rodzaju gniazda 
-        private static Socket _serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        private static Socket serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         //lista klientów
-        private static List<Socket> _clientSockets = new List<Socket>();
+        private static List<Socket> clientSockets = new List<Socket>();
         //bufor
-        private const int _bufferSize = 2048;
-        private static readonly byte[] _buffer =  new byte[_bufferSize];
+        private const int bufferSize = 2048;
+        private static readonly byte[] buffer =  new byte[bufferSize];
 
-        private static string[] _request = { "get time", "exit", "send string", "request list" };
+        private static string[] request = { "get time", "exit", "send string", "request list" };
         /// <summary>
         /// The entry point of the program, where the program control starts and ends.
         /// </summary>
@@ -39,9 +39,9 @@ namespace server
         { 
             Console.WriteLine("Setting server...");
             try{
-                _serverSocket.Bind(new IPEndPoint(IPAddress.Any, _portNumber));
-                _serverSocket.Listen(1);
-                _serverSocket.BeginAccept(new AsyncCallback(AcceptCallback), null);
+                serverSocket.Bind(new IPEndPoint(IPAddress.Any, portNumber));
+                serverSocket.Listen(1);
+                serverSocket.BeginAccept(new AsyncCallback(AcceptCallback), null);
 
                 Console.WriteLine("Server setup succesful complete");
             }
@@ -56,7 +56,7 @@ namespace server
         /// </summary>
         private static void CloseAllSocket()
         {
-            foreach(Socket socket in _clientSockets)
+            foreach(Socket socket in clientSockets)
             {
                 Console.WriteLine("Closeing all socket");
                 socket.Shutdown(SocketShutdown.Both);
@@ -69,10 +69,10 @@ namespace server
         /// <param name="asyncResult">Async result.</param>
         private static void AcceptCallback (IAsyncResult asyncResult)
         {
-            Socket socket = _serverSocket.EndAccept(asyncResult);
-            _clientSockets.Add(socket);
-            socket.BeginReceive(_buffer,0,_buffer.Length, SocketFlags.None, new AsyncCallback(ReceiveCallback), socket);
-            _serverSocket.BeginAccept(new AsyncCallback(AcceptCallback), null);
+            Socket socket = serverSocket.EndAccept(asyncResult);
+            clientSockets.Add(socket);
+            socket.BeginReceive(buffer,0,buffer.Length, SocketFlags.None, new AsyncCallback(ReceiveCallback), socket);
+            serverSocket.BeginAccept(new AsyncCallback(AcceptCallback), null);
 
         }
         /// <summary>
@@ -92,41 +92,30 @@ namespace server
             {
                 Console.WriteLine("Client force to close");
                 current.Close();
-                _clientSockets.Remove(current);
+                clientSockets.Remove(current);
                 return;
 
             }
 
             byte[] dataBuf = new byte[received];
-            Array.Copy(_buffer, dataBuf, received);
+            Array.Copy(buffer, dataBuf, received);
             string text = Encoding.ASCII.GetString(dataBuf);
             Console.WriteLine("Text received:" + text);
 
             //Get time
-            if (text.ToLower() == _request[0])
+            if (text.ToLower() == request[0])
             {
                 Console.WriteLine(Request.GetDate(current));
             }
             //exit
-            else if (text.ToLower() == _request[1])
+            else if (text.ToLower() == request[1])
             {
-                current.Shutdown(SocketShutdown.Both);
-                current.Close();
-                _clientSockets.Remove(current);
-                Console.WriteLine("client disconnected");
-                return;
+                Console.WriteLine(Request.Exit(current, clientSockets));
             }
             //request list
-            else if (text.ToLower() == _request[3] )
+            else if (text.ToLower() == request[3] )
             {
-                //Console.WriteLine("Request list send");
-                foreach(string value in _request)
-                {
-                    byte[] data = Encoding.ASCII.GetBytes(value); //poprawić pojawianie się listy w szeregu
-                    current.Send(data);
-                }
-                Console.WriteLine("Request list sent");
-
+                Console.WriteLine(Request.RequestList(current, request));
             }
             //Unknow
             else
@@ -137,7 +126,7 @@ namespace server
                 Console.WriteLine("Warning sent");
             }
 
-            current.BeginReceive(_buffer, 0, _bufferSize, SocketFlags.None, ReceiveCallback, current);
+            current.BeginReceive(buffer, 0, bufferSize, SocketFlags.None, ReceiveCallback, current);
       
         }
     }

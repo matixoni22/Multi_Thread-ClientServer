@@ -9,15 +9,7 @@ using System.Threading;
 namespace server
 {
     public static class Request
-    { 
-        /*
-        private static string _request { get; private set;}
-
-        public Request(string request)
-        {
-            this._request = request;
-        }
-        */
+    {
         public static string  GetDate(Socket socket)
         {
             byte[] data = Encoding.ASCII.GetBytes(DateTime.Now.ToString());
@@ -31,6 +23,41 @@ namespace server
             }
 
             return "Time sent";
+        }
+
+        public static string Exit(Socket socket, List<Socket> socketList)
+        {
+            try
+            {
+                socket.Shutdown(SocketShutdown.Both);
+                socket.Close();
+                socketList.Remove(socket);
+            }
+            catch(SocketException ex)
+            {
+                return "Disconnect Error:" + ex.ToString();
+            }
+
+            return "client disconnected";
+        }
+
+        public static string RequestList(Socket socket, string[] request)
+        {
+            //Console.WriteLine("Request list send");
+            try
+            {
+                foreach(string value in request)
+                {
+                    byte[] data = Encoding.ASCII.GetBytes(value); //poprawić pojawianie się listy w szeregu
+                    socket.Send(data);
+                }   
+            }
+            catch(SocketException ex)
+            {
+                return "Request list Error: " + ex.ToString();
+            }
+           
+            return "Request list Send!";
         }
     }
 }
