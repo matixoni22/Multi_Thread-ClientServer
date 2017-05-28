@@ -8,11 +8,12 @@ using System.Threading;
 
 namespace Client
 {
-    class MainCliet
+    class MainClient
     {
         private static readonly Socket clientSocket =  new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         private const int port = 2000;
-        
+
+
         /// <summary>
         /// The entry point of the program, where the program control starts and ends.
         /// </summary>
@@ -30,6 +31,8 @@ namespace Client
         public static void ConnectToServer()
         {
             int attempts = 0;
+            IPAddress ipAddress = IPAddress.Parse("192.168.56.101");
+            IPEndPoint endPoint = new IPEndPoint(ipAddress, port);
 
             while (!clientSocket.Connected)
             {
@@ -37,7 +40,7 @@ namespace Client
                 {
                     attempts++;
                     Console.WriteLine("Connection attempt " + attempts.ToString());
-                    clientSocket.Connect(IPAddress.Loopback, port);
+                    clientSocket.Connect(endPoint);
                 }
                 catch(SocketException ex)
                 {

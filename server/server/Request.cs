@@ -8,7 +8,7 @@ using System.Threading;
 
 namespace server
 {
-    public static class Request
+    static class Request
     {
         public static string  GetDate(Socket socket)
         {
@@ -41,7 +41,7 @@ namespace server
             return "client disconnected";
         }
 
-        public static string RequestList(Socket socket, string[] request)
+        public static string ListingRequest(Socket socket, string[] request)
         {
             //Console.WriteLine("Request list send");
             try

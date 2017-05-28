@@ -5,12 +5,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using MySql.Data;
+
 
 namespace server
 {
-    class MainServer
+    class MainServer 
     {
-        //port number
         private const int portNumber = 2000 ;
         //określenie rodzaju gniazda 
         private static Socket serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -115,7 +116,7 @@ namespace server
             //request list
             else if (text.ToLower() == request[3] )
             {
-                Console.WriteLine(Request.RequestList(current, request));
+                Console.WriteLine(Request.ListingRequest(current, request));
             }
             //Unknow
             else
@@ -125,9 +126,7 @@ namespace server
                 current.Send(data);
                 Console.WriteLine("Warning sent");
             }
-
             current.BeginReceive(buffer, 0, bufferSize, SocketFlags.None, ReceiveCallback, current);
-      
         }
     }
 
