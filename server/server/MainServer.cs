@@ -39,6 +39,9 @@ namespace server
         private static void SetupServer()
         { 
             Console.WriteLine("Setting server...");
+            DbConnector dbConnector = new DbConnector();
+            dbConnector.ConnectToDatabase();
+
             try{
                 serverSocket.Bind(new IPEndPoint(IPAddress.Any, portNumber));
                 serverSocket.Listen(1);
