@@ -10,7 +10,7 @@ using MySql.Data;
 
 namespace server.Requests
 {
-    public class Exit : RequestType
+    public class Exit : Request
     {
         override public void ExecuteRequest()
         {

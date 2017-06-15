@@ -1,24 +1,25 @@
 ﻿using System;
+using System.Net;
 using System.Net.Sockets;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading;
+using MySql.Data;
 
-namespace server
+
+
+namespace server.Requests
 {
-    public class RequestType
+    public class RequestType 
     {
-        public Socket socket{ get; set;}
-        public List<Socket> socketList{ get; set;}
-
-
-        public virtual void ExecuteRequest()
+        public RequestType(Socket socket, List<Socket> socketList, Request request)
         {
-            Console.WriteLine("Unknow request");
-            byte[] data = Encoding.ASCII.GetBytes("Unknow request");
-            socket.Send(data);
-            Console.WriteLine("Warning sent");
-        }
+            request.socket = socket;
+            request.socketList = socketList;
+            request.ExecuteRequest();
 
+        }
     }
 }
 

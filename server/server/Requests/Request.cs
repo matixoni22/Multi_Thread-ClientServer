@@ -1,40 +1,23 @@
 ﻿using System;
-using System.Net;
 using System.Net.Sockets;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading;
-using MySql.Data;
 
-
-
-namespace server.Requests
+namespace server
 {
-    public class Request 
+    public class Request
     {
-        RequestType requestType;
+        public Socket socket{ get; set;}
+        public List<Socket> socketList{ get; set;}
 
-        public Request(string request, Socket socket, List<Socket> socketList)
+        public virtual void ExecuteRequest()
         {
-            switch(request)
-            {
-                case "gettime":
-                    requestType = new GetTIme();
-                    requestType.socket = socket;
-                    requestType.ExecuteRequest();
-                    break;
-                case "exit":
-                    requestType = new Exit();
-                    requestType.ExecuteRequest();
-                    break;
-                default:
-                    requestType.ExecuteRequest();
-                    break;
-                    
-            }
-
+            Console.WriteLine("Unknow request");
+            byte[] data = Encoding.ASCII.GetBytes("Unknow request");
+            socket.Send(data);
+            Console.WriteLine("Warning sent");
         }
+
     }
 }
 

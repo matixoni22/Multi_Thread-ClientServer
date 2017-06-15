@@ -102,10 +102,11 @@ namespace server
 
             byte[] dataBuf = new byte[received];
             Array.Copy(buffer, dataBuf, received);
-            string request = Encoding.ASCII.GetString(dataBuf);
+            string requestName = Encoding.ASCII.GetString(dataBuf);
             //Console.WriteLine("Text received:" + text);
+            RequestTake request = new RequestTake(requestName);                
+            RequestType rq = new RequestType(current, clientSockets, request.ChooseRequest());
 
-            Request rq = new Request(request, current, clientSockets);
             current.BeginReceive(buffer, 0, bufferSize, SocketFlags.None, ReceiveCallback, current);
         }
     }

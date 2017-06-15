@@ -9,13 +9,14 @@ using MySql.Data;
 
 namespace server.Requests
 {
-    public class GetTIme : RequestType
+    public class GetTime : Request
     {
+        
         override public void ExecuteRequest()
         {
             Console.WriteLine("Text is a get time request");
             byte[] data = Encoding.ASCII.GetBytes(DateTime.Now.ToLongTimeString());
-            socket.Send(data);
+            base.socket.Send(data);
             Console.WriteLine("Time sent to client");
         }
     }
