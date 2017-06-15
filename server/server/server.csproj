@@ -35,19 +35,32 @@
       <HintPath>..\packages\MySql.Data.6.9.9\lib\net45\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="linq2db">
+      <HintPath>..\packages\linq2db.1.8.2\lib\net45\linq2db.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Request.cs" />
     <Compile Include="MainServer.cs" />
     <Compile Include="DatabaseServices\DbConnector.cs" />
     <Compile Include="DatabaseServices\DbFunctions.cs" />
+    <Compile Include="Models\LoginValidation.cs" />
+    <Compile Include="Requests\Request.cs" />
+    <Compile Include="Requests\Exit.cs" />
+    <Compile Include="Requests\GetTIme.cs" />
+    <Compile Include="Interfaces\IRequestType.cs" />
+    <Compile Include="Requests\RequestType.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Properties\Client\" />
     <Folder Include="Properties\New Folder\" />
     <Folder Include="DatabaseServices\" />
+    <Folder Include="Models\" />
+    <Folder Include="Properties\New Folder1\" />
+    <Folder Include="Requests\" />
+    <Folder Include="Interfaces\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

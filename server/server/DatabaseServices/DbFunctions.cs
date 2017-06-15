@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DatabaseServices
+namespace server.DatabaseServices
 {
     public class DbFunctions : DbConnector
     {

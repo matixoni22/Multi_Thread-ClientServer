@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using MySql.Data;
-
+using server.Requests;
 
 namespace server
 {
@@ -21,7 +21,7 @@ namespace server
         private const int bufferSize = 2048;
         private static readonly byte[] buffer =  new byte[bufferSize];
 
-        private static string[] request = { "get time", "exit", "send string", "request list" };
+        //private static string[] request = { "get time", "exit", "send string", "request list" };
         /// <summary>
         /// The entry point of the program, where the program control starts and ends.
         /// </summary>
@@ -39,8 +39,7 @@ namespace server
         private static void SetupServer()
         { 
             Console.WriteLine("Setting server...");
-            DbConnector dbConnector = new DbConnector();
-            dbConnector.ConnectToDatabase();
+           
 
             try{
                 serverSocket.Bind(new IPEndPoint(IPAddress.Any, portNumber));
@@ -103,32 +102,10 @@ namespace server
 
             byte[] dataBuf = new byte[received];
             Array.Copy(buffer, dataBuf, received);
-            string text = Encoding.ASCII.GetString(dataBuf);
-            Console.WriteLine("Text received:" + text);
+            string request = Encoding.ASCII.GetString(dataBuf);
+            //Console.WriteLine("Text received:" + text);
 
-            //Get time
-            if (text.ToLower() == request[0])
-            {
-                Console.WriteLine(Request.GetDate(current));
-            }
-            //exit
-            else if (text.ToLower() == request[1])
-            {
-                Console.WriteLine(Request.Exit(current, clientSockets));
-            }
-            //request list
-            else if (text.ToLower() == request[3] )
-            {
-                Console.WriteLine(Request.ListingRequest(current, request));
-            }
-            //Unknow
-            else
-            {
-                Console.WriteLine("Unknow request");
-                byte[] data = Encoding.ASCII.GetBytes("Unknow request");
-                current.Send(data);
-                Console.WriteLine("Warning sent");
-            }
+            Request rq = new Request(request, current, clientSockets);
             current.BeginReceive(buffer, 0, bufferSize, SocketFlags.None, ReceiveCallback, current);
         }
     }
