@@ -48,7 +48,6 @@
     <Compile Include="Models\LoginValidation.cs" />
     <Compile Include="Requests\Exit.cs" />
     <Compile Include="Requests\GetTIme.cs" />
-    <Compile Include="Interfaces\IRequestType.cs" />
     <Compile Include="Requests\RequestType.cs" />
     <Compile Include="Requests\Request.cs" />
     <Compile Include="Requests\RequestTake.cs" />

@@ -1,15 +1,42 @@
 ﻿using System;
 using System.Configuration;
-using LinqToDB.DataProvider.MySql;
+using MySql.Data.MySqlClient;
 
 namespace server.DatabaseServices
 {
     public class DbConnector
     {
-        public void ConnectToDatabase()
+        private string connectionString;
+        protected MySqlConnection connection;
+
+        protected void ConnectToDatabase()
         {
-            string connectionString = ConfigurationManager.AppSettings["DbConnection"];  
+            this.connectionString = ConfigurationManager.AppSettings["DbConnection"];  
         }
+        protected bool OpenConnection()
+        {
+            try{
+                connection = new MySqlConnection(connectionString);
+                connection.Open();
+                return true;
+            }
+            catch(MySqlException ex){
+                Console.WriteLine(ex.ToString());
+                return false;
+            }
+        }
+        protected bool ExitConnection()
+        {
+            try{
+                connection.Close();
+                return true;
+            }
+            catch(MySqlException ex){
+                Console.WriteLine(ex.ToString());
+                return false;
+            }
+        }
+
     }
 }
 

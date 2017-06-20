@@ -11,9 +11,10 @@ namespace Client
     class MainClient
     {
         private static readonly Socket clientSocket =  new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        private const int port = 2000;
-
-
+        private const int port =2000;
+        private static bool token = false;
+        private static string login;
+        private static string password;
         /// <summary>
         /// The entry point of the program, where the program control starts and ends.
         /// </summary>
@@ -79,13 +80,24 @@ namespace Client
         /// </summary>
         public static void SendRequest()
         {
-            Console.WriteLine("Send a request: ");
-            string request = Console.ReadLine();
-            SendString(request);
-
-            if(request.ToLower() == "exit")
+            if(token == false)
             {
-                Exit();
+                
+                Console.WriteLine("Login:");
+                login = Console.ReadLine();
+                Console.WriteLine("Password:");
+                password = Console.ReadLine();
+                SendString(password +"|"+ login);
+            }
+            else{
+                Console.WriteLine("Send a request: ");
+                string request = Console.ReadLine();
+                SendString(request);
+
+                if(request.ToLower() == "exit")
+                {
+                    Exit();
+                }
             }
         }
         /// <summary>
@@ -105,8 +117,22 @@ namespace Client
             Array.Copy(buffer, data, received);
 
             string text = Encoding.ASCII.GetString(data);
-            Console.WriteLine(text);
+            if(token == false)
+            {
+                if(text == "auth approve")
+                {
+                    token = true;
+                    Console.WriteLine("Authentication approve");
+                }
+                else{
+                    Console.WriteLine("Authentication false");
 
+                }
+            }
+            else
+            {
+                Console.WriteLine(text);
+            }
         }
         /// <summary>
         /// Sends the string.

@@ -14,6 +14,7 @@ namespace server.Requests
         {
             switch(request)
             {
+                //case string.
                 case "gettime":
                     return new GetTime();
                 case "exit":
