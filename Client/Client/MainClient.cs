@@ -6,22 +6,27 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 
+
 namespace Client
 {
     class MainClient
     {
         private static readonly Socket clientSocket =  new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        private const int port =2000;
         private static bool token = false;
         private static string login;
         private static string password;
+
+
         /// <summary>
         /// The entry point of the program, where the program control starts and ends.
         /// </summary>
         static void Main()
         {
             Console.Title = "Client";
-            ConnectToServer();
+            while(!ConnectToServer())
+            {
+                ConnectToServer();
+            }
             RequestLoop();
             Exit();
 
@@ -29,27 +34,33 @@ namespace Client
         /// <summary>
         /// Connects to server.
         /// </summary>
-        public static void ConnectToServer()
+        public static bool ConnectToServer()
         {
-            int attempts = 0;
-            IPAddress ipAddress = IPAddress.Parse("192.168.56.101");
+           
+            Console.WriteLine("Set ip of server:");
+            string ip =  Console.ReadLine();
+            Console.WriteLine("Set port:");
+            string portString = Console.ReadLine();
+
+            IPAddress ipAddress = IPAddress.Parse(ip);
+            int port;
+            int.TryParse(portString, out port);
             IPEndPoint endPoint = new IPEndPoint(ipAddress, port);
+       
+            clientSocket.SendTimeout = 10000;
 
             while (!clientSocket.Connected)
             {
-                try
-                {
-                    attempts++;
-                    Console.WriteLine("Connection attempt " + attempts.ToString());
+                try{
                     clientSocket.Connect(endPoint);
-                }
-                catch(SocketException ex)
-                {
-                    Console.WriteLine("Error: " + ex);
+                   
+               }
+                catch(SocketException){
+                    Console.WriteLine("Cannot connect to server. Verify your connection and server address");
+                    return false;
                 }
             }
-
-            Console.WriteLine("Connected to server");
+            return true;
         }
         /// <summary>
         /// Requests the loop.
